@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<!-- SlickGrid -->
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/slick.grid.css"/>
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/css/smoothness/jquery-ui-1.11.4.css"/>
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/examples/examples.css"/>
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/controls/slick.pager.css"/>
+<link rel="stylesheet" type="text/css" href="package/d3/d3.parcoords.css">
+
+</head>
+
+<body>
+
+<script type="text/javascript" src="package/jquery.js"></script>
+<script type="text/javascript" src="package/jquery.ui.js"></script>
+<script type="text/javascript" src="package/jquery.ui.sortable.js"></script>
+<script type="text/javascript" src="package/jquery.ui.button.js"></script>
+<script type="text/javascript" src="package/jquery.ui.dialog.js"></script>
+<script type="text/javascript" src="package/d3/d3.min.js"></script>
+<script type="text/javascript" src="package/d3/d3.parcoords.js"></script>
+<script type="text/javascript" src="package/SlickGrid/divgrid.js"></script>
+<script type="text/javascript" src="package/SlickGrid/lib/jquery.event.drag-2.2.js"></script>
+<script type="text/javascript" src="package/SlickGrid/slick.core.js"></script>
+<script type="text/javascript" src="package/SlickGrid/slick.grid.js"></script>
+<script type="text/javascript" src="package/SlickGrid/slick.dataview.js"></script>
+<script type="text/javascript" src="package/SlickGrid/controls/slick.pager.js"></script>
+
+<!-- End SlickGrid -->
+
+
+<style>
+.ui-widget, .tick {
+  font-family: arial;
+  font-size: 8pt;    
+}
+
+body, html {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  background-color: white;
+}
+body {
+  overflow-y: scroll;
+}
+
+#grid, #pager {
+  width: 100%;
+}
+#grid {
+  bottom: 0;
+  height: 300px;
+}
+#pager {
+  bottom: 306px;
+  height: 20px;
+}
+.slick-row:hover {
+  font-weight: bold;
+  color: #069;
+}
+</style>
+
+</head>
+
+<div id="dataset" style="display:none;">
+Sample	Subject_ID	Cell_Type	Genotype	Age	Sex	Treatment	Total_reads	Uniq_Rate	Multi_Rate	Unmap_Rate	Uniq_Mapped_Reads	Gene_Rate	Ambiguity_Rate	No_Feature_Rate	Avg_Corr	Corr_diff	MADScore	isOutlier	Pct_MT	Pct_Top1	Pct_Top10
+MG-Sal-WT-1F	subject94	Microglia	WT	2m	F	Saline	14163830	88.57	4.26	7.17	12544884	81.07	3.88	15.04	0.75	-0.02	-1.54	N	0	6.4	17.6
+MG-Sal-WT-2F	subject95	Microglia	WT	2m	F	Saline	15407000	89.76	4.17	6.07	13828849	82.53	3.71	13.76	0.76	-0.01	-1.05	N	0	6.3	17
+MG-Sal-WT-3M	subject96	Microglia	WT	2m	M	Saline	19455104	90.26	3.94	5.8	17559955	84.92	3.73	11.35	0.76	-0.01	-1.14	N	0	6.2	16.9
+MG-Sal-WT-4M	subject97	Microglia	WT	2m	M	Saline	17714624	89.03	4.07	6.9	15771723	85.43	3.84	10.72	0.76	-0.01	-0.97	N	0	6.3	17.3
+MG-Sal-KO-1F	subject98	Microglia	KO	2m	F	Saline	14429702	89.23	4.23	6.54	12875049	79.81	3.65	16.55	0.75	-0.02	-1.56	N	0	5.8	16.9
+MG-Sal-KO-2F	subject99	Microglia	KO	2m	F	Saline	14120898	89.12	4.22	6.66	12585135	81.35	3.83	14.82	0.75	-0.02	-1.6	N	0	5.9	17.3
+MG-Sal-KO-3F	subject100	Microglia	KO	2m	F	Saline	15091374	89.91	3.82	6.27	13568037	78.54	3.49	17.97	0.75	-0.03	-2	N	0	5.4	16.1
+MG-LPS-WT-10F	subject106	Microglia	WT	2m	F	LPS	14991783	86.23	6.03	7.74	12928153	85.54	3.53	10.94	0.78	0.01	0.65	N	0	3.8	14.4
+MG-LPS-WT-11F	subject107	Microglia	WT	2m	F	LPS	14363456	88.52	5.18	6.3	12714028	85.05	3.41	11.54	0.79	0.01	0.81	N	0	3.7	13.8
+MG-LPS-WT-12F	subject109	Microglia	WT	2m	F	LPS	17075487	87.98	4.96	7.06	15022723	83.44	3.39	13.17	0.78	0.01	0.66	N	0	3.4	13.3
+MG-LPS-WT-5F	subject102	Microglia	WT	2m	F	LPS	14263211	88.08	4.97	6.95	12563196	83.59	3.48	12.92	0.77	0	0.05	N	0	3.7	13.4
+MG-LPS-WT-6F	subject103	Microglia	WT	2m	F	LPS	13451060	88.51	4.8	6.69	11904862	80.37	3.51	16.11	0.77	-0.01	-0.63	N	0	4.2	15.2
+MG-LPS-WT-11M	subject108	Microglia	WT	2m	M	LPS	15364177	88.8	4.77	6.43	13643895	82.5	3.33	14.16	0.78	0.01	0.47	N	0	3.3	13.6
+MG-LPS-WT-1M	subject101	Microglia	WT	2m	M	LPS	14911753	89.24	3.82	6.94	13306578	78.74	3.38	17.88	0.74	-0.03	-2.32	N	0	6	16.6
+MG-LPS-WT-8M	subject104	Microglia	WT	2m	M	LPS	13232750	87.15	5.42	7.43	11532330	83.2	3.45	13.34	0.77	0	0.04	N	0	3.6	13.8
+MG-LPS-WT-9M	subject105	Microglia	WT	2m	M	LPS	14247389	87.17	5.3	7.53	12419743	86.83	3.67	9.5	0.79	0.02	1.06	N	0	3.6	13.8
+MG-LPS-Het-10F	subject117	Microglia	Het	2m	F	LPS	18741728	88.15	5.03	6.82	16521215	84.98	3.63	11.39	0.78	0.01	0.63	N	0	4.1	14.5
+MG-LPS-Het-6F	subject113	Microglia	Het	2m	F	LPS	18019149	87.69	5.4	6.91	15800564	87.71	3.62	8.67	0.79	0.02	1.02	N	0	3.6	14
+MG-LPS-Het-9F	subject116	Microglia	Het	2m	F	LPS	16395085	89.26	4.69	6.05	14634496	83.75	3.31	12.93	0.78	0.01	0.65	N	0	3	12.5
+MG-LPS-Het-3M	subject110	Microglia	Het	2m	M	LPS	16451993	87.64	5.7	6.66	14418416	84.58	3.47	11.95	0.78	0.01	0.4	N	0	3.1	14.8
+MG-LPS-Het-4M	subject111	Microglia	Het	2m	M	LPS	16032627	87.27	5.83	6.9	13991168	87.33	3.64	9.03	0.79	0.02	0.98	N	0	3.8	14.9
+MG-LPS-Het-5M	subject112	Microglia	Het	2m	M	LPS	16799448	87.54	5.42	7.04	14705795	84.94	3.52	11.54	0.78	0.01	0.46	N	0	3.3	13.3
+MG-LPS-Het-7M	subject114	Microglia	Het	2m	M	LPS	15475476	89.52	4.15	6.33	13854051	84.16	3.93	11.91	0.76	-0.01	-1.01	N	0	5.7	16.5
+MG-LPS-Het-8M	subject115	Microglia	Het	2m	M	LPS	16353038	89.16	5.01	5.83	14579682	87.04	3.58	9.37	0.79	0.02	1.11	N	0	3.7	13.5
+MG-LPS-KO-12F	subject122	Microglia	KO	2m	F	LPS	15651561	88.39	4.98	6.63	13834709	84.57	3.51	11.92	0.78	0.01	0.7	N	0	3.4	13.9
+MG-LPS-KO-13F	subject123	Microglia	KO	2m	F	LPS	15190526	90.01	4.34	5.65	13672476	88.59	4.2	7.21	0.78	0.01	0.27	N	0	5.9	17.8
+MG-LPS-KO-8F	subject118	Microglia	KO	2m	F	LPS	15427831	87.83	5.36	6.81	13550917	85.57	3.64	10.79	0.79	0.01	0.84	N	0	3.6	14.7
+MG-LPS-KO-9F	subject119	Microglia	KO	2m	F	LPS	15020164	88.32	5.08	6.6	13265844	86.91	3.53	9.57	0.79	0.02	0.91	N	0	3.6	13.5
+MG-LPS-KO-10M	subject120	Microglia	KO	2m	M	LPS	16021540	87.98	5.37	6.65	14096522	85.19	3.68	11.13	0.78	0.01	0.43	N	0	4.1	14.1
+MG-LPS-KO-11M	subject121	Microglia	KO	2m	M	LPS	15846342	87.68	5.29	7.03	13894167	87.25	3.62	9.13	0.79	0.02	1.25	N	0	3.5	13.5
+MG-LPS-KO-14M	subject124	Microglia	KO	2m	M	LPS	12799543	87.46	5.35	7.19	11194992	85.01	3.59	11.4	0.78	0.01	0.57	N	0	3.7	13.8
+PC-Sal-WT-1F	subject125	Peritoneal	WT	2m	F	Saline	15309587	76.21	10.25	13.54	11666911	92.12	3.01	4.87	0.77	0	-0.33	N	0	4.2	15
+PC-Sal-WT-2F	subject126	Peritoneal	WT	2m	F	Saline	13026263	83.37	7.63	9	10860615	92.51	3.16	4.34	0.77	0	-0.44	N	0	4.8	15.1
+PC-Sal-WT-3M	subject127	Peritoneal	WT	2m	M	Saline	13420251	85.37	7.34	7.29	11457283	90.61	3.23	6.16	0.78	0.01	0.36	N	0	3.9	14.2
+PC-Sal-WT-4M	subject128	Peritoneal	WT	2m	M	Saline	13749933	83.75	8.02	8.23	11516042	91.84	3.19	4.97	0.78	0.01	0.25	N	0	3.8	14.2
+PC-Sal-KO-1F	subject129	Peritoneal	KO	2m	F	Saline	13463794	84.22	7.33	8.45	11339230	92.33	3.44	4.23	0.77	0	-0.25	N	0	4.6	16.2
+PC-Sal-KO-2F	subject130	Peritoneal	KO	2m	F	Saline	13247855	84.4	7.29	8.31	11181449	92.95	3.34	3.71	0.78	0	0.16	N	0	4.9	16
+PC-Sal-KO-3F	subject131	Peritoneal	KO	2m	F	Saline	14881902	83.39	8.04	8.57	12409876	91.91	3.32	4.76	0.77	0	-0.37	N	0	7.5	17.5
+PC-LPS-WT-10F	subject137	Peritoneal	WT	2m	F	LPS	14539690	82.52	8.15	9.33	11998385	92.71	3.07	4.22	0.75	-0.02	-1.41	N	0	2.6	16.7
+PC-LPS-WT-11F	subject138	Peritoneal	WT	2m	F	LPS	14931683	84.07	7.46	8.47	12553436	91.55	3.35	5.11	0.77	0	-0.33	N	0	5.6	16.4
+PC-LPS-WT-12F	subject140	Peritoneal	WT	2m	F	LPS	14354036	83.95	7.36	8.69	12050720	92.28	2.95	4.77	0.76	-0.01	-1.08	N	0	5.6	22.8
+PC-LPS-WT-5F	subject133	Peritoneal	WT	2m	F	LPS	14232601	83.82	7.74	8.44	11929199	91.39	3.1	5.51	0.77	0	-0.19	N	0	2.7	11.7
+PC-LPS-WT-6F	subject134	Peritoneal	WT	2m	F	LPS	17727513	84.68	7.27	8.05	15012082	92.23	2.96	4.81	0.76	-0.01	-0.96	N	0	4.8	19.6
+PC-LPS-WT-11M	subject139	Peritoneal	WT	2m	M	LPS	14547045	82.79	8.59	8.62	12044212	93.01	3.11	3.88	0.76	-0.01	-1.15	N	0	4.1	19.8
+PC-LPS-WT-1M	subject132	Peritoneal	WT	2m	M	LPS	14720474	82.24	9.26	8.5	12105923	91.14	2.95	5.91	0.77	0	0.01	N	0	6.2	19.7
+PC-LPS-WT-8M	subject135	Peritoneal	WT	2m	M	LPS	14645733	84.78	7.13	8.09	12417129	92.04	2.95	5.01	0.76	-0.01	-0.83	N	0	6	23.5
+PC-LPS-WT-9M	subject136	Peritoneal	WT	2m	M	LPS	14365891	84.09	7.28	8.63	12079758	92.68	3	4.31	0.77	0	-0.15	N	0	5.2	22.3
+PC-LPS-Het-10F	subject148	Peritoneal	Het	2m	F	LPS	17552120	82.88	7.91	9.21	14547623	89.99	2.96	7.05	0.76	-0.01	-1.09	N	0	4.9	20.6
+PC-LPS-Het-6F	subject144	Peritoneal	Het	2m	F	LPS	23062607	83.78	7.51	8.71	19322187	91.18	2.82	6	0.76	-0.02	-1.28	N	0	6.3	22.6
+PC-LPS-Het-9F	subject147	Peritoneal	Het	2m	F	LPS	15993872	82.94	8.51	8.55	13264910	92.65	3.11	4.24	0.76	-0.01	-0.77	N	0	3.8	18.1
+PC-LPS-Het-3M	subject141	Peritoneal	Het	2m	M	LPS	13030856	84.03	7.11	8.86	10949232	92.19	2.93	4.88	0.76	-0.01	-0.69	N	0	6.1	24.3
+PC-LPS-Het-4M	subject142	Peritoneal	Het	2m	M	LPS	16035488	83.7	7.6	8.7	13421856	93.3	2.97	3.73	0.76	-0.01	-1.06	N	0	4.6	19.7
+PC-LPS-Het-5M	subject143	Peritoneal	Het	2m	M	LPS	20145767	85.2	7.07	7.73	17164366	92.34	3.19	4.47	0.77	0	0.02	N	0	3.4	18.5
+PC-LPS-Het-7M	subject145	Peritoneal	Het	2m	M	LPS	15000814	83.69	7.77	8.54	12553912	93.88	3.21	2.91	0.78	0.01	0.79	N	0	2.8	13.7
+PC-LPS-Het-8M	subject146	Peritoneal	Het	2m	M	LPS	14740993	83.7	7.75	8.55	12337729	93.19	2.99	3.82	0.77	0	-0.42	N	0	4.8	20.9
+PC-LPS-KO-12F	subject153	Peritoneal	KO	2m	F	LPS	23553389	83.33	7.73	8.94	19627097	90.37	3.04	6.59	0.76	-0.01	-0.7	N	0	3.8	16.8
+PC-LPS-KO-13F	subject154	Peritoneal	KO	2m	F	LPS	17919801	83.97	7.65	8.38	15046805	92.32	3.48	4.2	0.77	0	0.01	N	0	7	16.4
+PC-LPS-KO-8F	subject149	Peritoneal	KO	2m	F	LPS	13703747	82.36	7.88	9.76	11286390	91.98	3.02	5	0.76	-0.01	-0.83	N	0	4.6	20.3
+PC-LPS-KO-9F	subject150	Peritoneal	KO	2m	F	LPS	23303529	83.62	7.46	8.92	19486477	93.55	3.73	2.72	0.78	0.01	0.34	N	0	9.7	18.6
+PC-LPS-KO-10M	subject151	Peritoneal	KO	2m	M	LPS	18811184	83.98	7.84	8.18	15797762	93.22	3.23	3.55	0.78	0.01	0.26	N	0	4	15.1
+PC-LPS-KO-11M	subject152	Peritoneal	KO	2m	M	LPS	20767813	84.04	7.67	8.29	17453212	92.9	3.02	4.07	0.78	0.01	0.29	N	0	4	19.6
+PC-LPS-KO-14M	subject155	Peritoneal	KO	2m	M	LPS	20905864	84.36	7.62	8.02	17635180	92.4	3.14	4.46	0.77	0	-0.01	N	0	3.6	18.9
+</div>
+
+<div id="canvas1" class="parcoords" style="height:400px;"></div>
+
+<div style="padding:4px;font-size:10pt;">
+<b>Controls:</b> 
+<b>Brush</b> - Drag vertically along an axis.
+<b>Remove Brush</b> - Tap the axis background.
+<b>Reorder Axes</b> - Drag an axis label horizontally.
+<b>Color Lines by Values</b> - Click on an axis label.
+<b>Invert Axis</b> - Double click on an axis label.
+<b>Remove Axis</b> - Drag axis label off the left or the right edge.
+<b>Tooltip</b> - Click on a line to show values, move out of the canvas to remove tooptip.
+</div>
+
+<hr>
+<div id="dialog_Total_reads" title="Total_reads" style="display:none;">
+  <p>Total number of sequencing reads from raw fastq file</p>
+</div>
+<div id="dialog_Uniq_Rate" title="Uniq_Rate" style="display:none;">
+  <p>Percentage of reads uniquely mapped to the reference genome.</p>
+</div>
+<div id="dialog_Multi_Rate" title="Multi_Rate" style="display:none;">
+  <p>Percentage of reads mapped equally well to multiple locations on the reference genome.</p>
+</div>
+<div id="dialog_Unmap_Rate" title="Unmap_Rate" style="display:none;">
+  <p>Percentage of reads not mapped to the reference genome.</p>
+</div>
+<div id="dialog_Uniq_Mapped_Reads" title="Uniq_Mapped_Reads" style="display:none;">
+  <p>Number of uniquely mapped reads.</p>
+</div>
+<div id="dialog_Gene_Rate" title="Gene_Rate" style="display:none;">
+  <p>Percentage of reads mapped to unique gene region, including Exons, UTRs and Introns.</p>
+</div>
+<div id="dialog_Ambiguity_Rate" title="Ambiguity_Rate" style="display:none;">
+  <p>Percentage of reads mapped to gene-overlapping region and can't be unambiguously assigned to either gene.</p>
+</div>
+<div id="dialog_No_Feature_Rate" title="No_Feature_Rate" style="display:none;">
+  <p>Percentage of reads mapped to unannotated genomic regions.</p>
+</div>
+<div id="dialog_Total_Tags" title="Total_Tags" style="display:none;">
+  <p>Total number of tags (reads, one paired-end read counted as two reads)</p>
+</div>
+<div id="dialog_CDS_Exon" title="CDS_Exon" style="display:none;">
+  <p>Percentage of mapped reads on Exons.</p>
+</div>
+<div id="dialog_5UTR_Exon" title="5UTR_Exon" style="display:none;">
+  <p>Percentage of mapped reads on 5' UTR.</p>
+</div>
+<div id="dialog_3UTR_Exon" title="3UTR_Exon" style="display:none;">
+  <p>Percentage of mapped reads on 3' UTR.</p>
+</div>
+<div id="dialog_Introns" title="Introns" style="display:none;">
+  <p>Percentage of mapped reads on Introns.</p>
+</div>
+<div id="dialog_Intergenic" title="Intergenic" style="display:none;">
+  <p>Percentage of mapped reads on Intergenic regions.</p>
+</div>
+<div id="dialog_Counted_Reads" title="Counted_Reads" style="display:none;">
+  <p>Reads counted by featureCounts (=uniquely mapped read  * uniq_rate)</p>
+</div>
+<div id="dialog_Norm_Factor" title="Norm_Factor" style="display:none;">
+  <p>Normalization factor calculated by edgeR</p>
+</div>
+<div id="dialog_Avg_Corr" title="Avg_Corr" style="display:none;">
+  <p>Average correlation where this sample is involved</p>
+</div>
+<div id="dialog_Corr_diff" title="Corr_diff" style="display:none;">
+  <p>
+Avg_Corr : Average correlation where this sample is involved; <br><br>
+Avg_Rest : Average correlation where this sample is NOT involved; <br><br>
+Corr_diff : The difference between Avg_Corr and Avg_Rest.</p>
+</div>
+<div id="dialog_MADScore" title="MADScore" style="display:none;">
+  <p>
+(1) For each sample, calculate the correlation difference. This is simply a difference between the average of all the pair wise correlations that involve the sample (for the same group) and the average of all the pair wise correlations that do not involve the sample. For example, if we have a, b, c, d for group 1, the correlation difference of sample a is:<br><br>
+The difference of Average (correlation(a, b), correlation(a, c), correlation(a, d)) and Average (correlation(b, c), correlation (b, d), correlation(c, d)). You can see that if sample a is an outlier, then the difference will be negative.<br><br>
+(2) Now we have a vector of values (one for each sample). We simply convert this vector to MAD scores (robust Z-scores) by subtracting the medians then dividing it by median absolute deviations (MAD). We use a standard MAD cutoff (e.g. -5) to determine the outliers.</p>
+</div>
+
+<table border=0>
+<tr><td>
+Search: <input type="text" id="txtSearch" value="">
+</td><td>Right click on a column header to show the explanation.</td></tr>
+</table>
+
+<div id="grid"></div>
+<div id="pager"></div>
+
+
+<script type="text/javascript">
+
+var color_set = d3.scale.linear().range(["#3182bd", "#f33"]);
+
+var parcoords = d3.parcoords()("#canvas1")
+	.alpha(0.4)
+	.mode("queue") // progressive rendering
+	.height(400)
+	.margin({
+		top: 36,
+		left: 0,
+		right: 0,
+		bottom: 16
+	});
+
+// load tsv file and create the chart
+
+var dataset = d3.select('#dataset').text().replace(/^\s+|\s+$/g, '');
+var data = d3.tsv.parse(dataset);
+
+
+data.forEach(function(d, i) {
+	d.id = d.id || i;
+});
+
+parcoords
+	.data(data)
+	.hideAxis(["id", "Avg_Corr", "Corr_diff"])
+	.render()
+	.margin({
+		top: 40,
+		right: 20,
+		bottom: 20,
+		left: 50
+	})
+	.reorderable()
+	.brushMode("1D-axes");
+
+// setting up grid
+var column_keys = d3.keys(data[0]);
+var columns = column_keys.map(function(key, i) {
+	return {
+		id: key,
+		name: key,
+		field: key,
+		sortable: true
+	}
+});
+
+
+// update_colors(d3.keys(data[0])[2]);
+
+// click label to activate coloring
+parcoords.svg.selectAll(".dimension")
+	.on("click", update_colors)
+	.selectAll(".label")
+	.style("font-size", "10px"); // change font sizes of selected label
+
+
+//add hover event
+d3.select("#canvas1 svg")
+	.on("click", function() {
+		var mousePosition = d3.mouse(this);
+		highlightLineOnClick(mousePosition, true); //true will also add tooltip
+	})
+	.on("mouseout", function() {
+		cleanTooltip();
+		parcoords.unhighlight();
+	});
+
+
+// update color and font weight of chart based on axis selection
+// modified from here: https://syntagmatic.github.io/parallel-coordinates/
+function update_colors(dimension) {
+
+console.log(dimension);
+
+	// change the fonts to bold
+	parcoords.svg.selectAll(".dimension")
+		.style("font-weight", "normal")
+		.filter(function(d) {
+			return d == dimension;
+		})
+		.style("font-weight", "bold");
+
+	// change color of lines
+	// set domain of color scale
+	var values0 = getActiveData().map(function(d) {
+		return d[dimension];
+	});
+	values = values0.map(function(d) {return parseFloat(d)});
+
+	if (isNaN(values[0])) {
+		var n = {},j=1,i;
+		for(i = 0; i < values0.length; i++) {
+			if (!n[values0[i]]) {
+				n[values0[i]] = j++; 
+			}
+		}
+		for(i = 0; i < values.length; i++) {
+			values[i] = n[values0[i]];
+		}
+	}
+
+	color_set.domain([d3.min(values), d3.max(values)]);
+
+	// change colors for each line
+//	parcoords.color(function(d) {
+//		return color_set([d[dimension]])
+//	}).render();
+
+	parcoords.color(function(d,i) {
+		return color_set(values[i])
+	}).render();
+};
+
+
+// Add highlight for every line on click
+function getCentroids(data) {
+	// this function returns centroid points for data. I had to change the source
+	// for parallelcoordinates and make compute_centroids public.
+	// I assume this should be already somewhere in graph and I don't need to recalculate it
+	// but I couldn't find it so I just wrote this for now
+	var margins = parcoords.margin();
+	var graphCentPts = [];
+
+	data.forEach(function(d) {
+
+		var initCenPts = parcoords.compute_centroids(d).filter(function(d, i) {
+			return i % 2 == 0;
+		});
+
+		// move points based on margins
+		var cenPts = initCenPts.map(function(d) {
+			return [d[0] + margins["left"], d[1] + margins["top"]];
+		});
+
+		graphCentPts.push(cenPts);
+	});
+
+	return graphCentPts;
+}
+
+function getActiveData() {
+	// I'm pretty sure this data is already somewhere in graph
+	if (parcoords.brushed() != false) return parcoords.brushed();
+	return parcoords.data();
+}
+
+function isOnLine(startPt, endPt, testPt, tol) {
+	// check if test point is close enough to a line
+	// between startPt and endPt. close enough means smaller than tolerance
+	var x0 = testPt[0];
+	var y0 = testPt[1];
+	var x1 = startPt[0];
+	var y1 = startPt[1];
+	var x2 = endPt[0];
+	var y2 = endPt[1];
+	var Dx = x2 - x1;
+	var Dy = y2 - y1;
+	var delta = Math.abs(Dy * x0 - Dx * y0 - x1 * y2 + x2 * y1) / Math.sqrt(Math.pow(Dx, 2) + Math.pow(Dy, 2));
+	//console.log(delta);
+	if (delta <= tol) return true;
+	return false;
+}
+
+function findAxes(testPt, cenPts) {
+	// finds between which two axis the mouse is
+	var x = testPt[0];
+	var y = testPt[1];
+
+	// make sure it is inside the range of x
+	if (cenPts[0][0] > x) return false;
+	if (cenPts[cenPts.length - 1][0] < x) return false;
+
+	// find between which segment the point is
+	for (var i = 0; i < cenPts.length; i++) {
+		if (cenPts[i][0] > x) return i;
+	}
+}
+
+function cleanTooltip() {
+	// removes any object under #tooltip is
+	parcoords.svg.selectAll("#tooltip")
+		.remove();
+}
+
+function addTooltip(clicked, clickedCenPts) {
+
+	// add tooltip to multiple clicked lines
+	var clickedDataSet = [];
+	var margins = parcoords.margin();
+	var dim = parcoords.dimensions();
+
+	// get all the values into a single list
+	// I'm pretty sure there is a better way to write this is Javascript
+	for (var i = 0; i < clicked.length; i++) {
+//console.log(clicked[i]);
+		for (var j = 0; j < clickedCenPts[i].length; j++) {
+// Baohong: fix the bug here, should match displaying axis
+//			var text = d3.values(clicked[i])[j];
+			var text = String(clicked[i][dim[j]]); // It must be String type
+			// not clean at all!
+			var x = clickedCenPts[i][j][0] - margins.left;
+			var y = clickedCenPts[i][j][1] - margins.top;
+			clickedDataSet.push([x, y, text]);
+		}
+	};
+
+
+	// add rectangles
+	var fontSize = 14;
+	var padding = 2;
+	var rectHeight = fontSize + 2 * padding; //based on font size
+
+	parcoords.svg.selectAll("rect[id='tooltip']")
+		.data(clickedDataSet).enter()
+		.append("rect")
+		.attr("x", function(d) {
+			return d[0] - d[2].length * 5;
+		})
+		.attr("y", function(d) {
+			return d[1] - rectHeight + 2 * padding;
+		})
+		.attr("rx", "2")
+		.attr("ry", "2")
+		.attr("id", "tooltip")
+		.attr("fill", "grey")
+		.attr("opacity", 0.9)
+		.attr("width", function(d) {
+			return d[2].length * 10;
+		})
+		.attr("height", rectHeight);
+
+	// add text on top of rectangle
+	parcoords.svg.selectAll("text[id='tooltip']")
+		.data(clickedDataSet).enter()
+		.append("text")
+		.attr("x", function(d) {
+			return d[0];
+		})
+		.attr("y", function(d) {
+			return d[1];
+		})
+		.attr("id", "tooltip")
+		.attr("fill", "white")
+		.attr("text-anchor", "middle")
+		.attr("font-size", fontSize)
+		.text(function(d) {
+			return d[2];
+		})
+}
+
+function getClickedLines(mouseClick) {
+	var clicked = [];
+	var clickedCenPts = [];
+
+	// find which data is activated right now
+	var activeData = getActiveData();
+
+	// find centriod points
+	var graphCentPts = getCentroids(activeData);
+
+	if (graphCentPts.length == 0) return false;
+
+	// find between which axes the point is
+	var axeNum = findAxes(mouseClick, graphCentPts[0]);
+	if (!axeNum) return false;
+
+	graphCentPts.forEach(function(d, i) {
+		if (isOnLine(d[axeNum - 1], d[axeNum], mouseClick, 2)) {
+			clicked.push(activeData[i]);
+			clickedCenPts.push(graphCentPts[i]); // for tooltip
+		}
+	});
+
+	return [clicked, clickedCenPts]
+}
+
+
+function highlightLineOnClick(mouseClick, drawTooltip) {
+
+	var clicked = [];
+	var clickedCenPts = [];
+
+	clickedData = getClickedLines(mouseClick);
+
+	if (clickedData && clickedData[0].length != 0) {
+
+		clicked = clickedData[0];
+		clickedCenPts = clickedData[1];
+
+		// highlight clicked line
+		parcoords.highlight(clicked);
+
+		if (drawTooltip) {
+			// clean if anything is there
+			cleanTooltip();
+			// add tooltip
+			addTooltip(clicked, clickedCenPts);
+		}
+
+	}
+}
+
+
+// SlickGrid
+var options = {
+	enableCellNavigation: true,
+	multiColumnSort: false
+};
+
+var dataView = new Slick.Data.DataView();
+var grid = new Slick.Grid("#grid", dataView, columns, options);
+var pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
+
+// wire up model events to drive the grid
+dataView.onRowCountChanged.subscribe(function(e, args) {
+	grid.updateRowCount();
+	grid.render();
+});
+
+dataView.onRowsChanged.subscribe(function(e, args) {
+	grid.invalidateRows(args.rows);
+	grid.render();
+});
+
+
+// column sorting
+var sortcol = column_keys[0];
+var sortdir = 1;
+
+function comparer(a, b) {
+
+    // Baohong Zhang: fix to sort numberic values
+    if ($.isNumeric(a[sortcol]) && $.isNumeric(b[sortcol])) {
+		a[sortcol] = parseFloat(a[sortcol], 10);
+		b[sortcol] = parseFloat(b[sortcol], 10);
+	}
+
+	var x = a[sortcol],
+		y = b[sortcol];
+	return (x == y ? 0 : (x > y ? 1 : -1));
+}
+
+// click header to sort grid column
+grid.onSort.subscribe(function(e, args) {
+	sortdir = args.sortAsc ? 1 : -1;
+	sortcol = args.sortCol.field;
+
+	dataView.sort(comparer, args.sortAsc);
+});
+
+// highlight row in chart
+// Baohong: Added Tooltip
+grid.onMouseEnter.subscribe(function(e, args) {
+//	var d = parcoords.brushed() || data;
+	var r = grid.getCellFromEvent(e).row;
+	var i = dataView.getIdxById(grid.getDataItem(r)["id"])  // Baohong: sorting changes underlying data order
+
+	var d = parcoords.brushed() || data;
+	parcoords.highlight([d[i]]);
+	// clean if anything is there
+	cleanTooltip();
+	// add tooltip
+	addTooltip([d[i]], getCentroids([d[i]]));
+});
+
+grid.onMouseLeave.subscribe(function(e, args) {
+	parcoords.unhighlight();
+	cleanTooltip();
+});
+
+grid.onHeaderContextMenu.subscribe(function(e, args) {
+	e.preventDefault();
+	var theDialog = $("#dialog_"+args.column.id).dialog();
+	theDialog.dialog("option", "position", [e.pageX,e.pageY]);
+	theDialog.dialog("open");
+});
+
+grid.onClick.subscribe(function(e, args) {
+
+	// args.row - row of the clicked cell
+	// args.cell - column of the clicked cell
+});
+
+
+// update grid on brush
+parcoords.on("brush", function(d) {
+	gridUpdate(d);
+});
+
+
+var searchString = "";
+
+function myFilter(data, args) {
+	if (args.searchString != "" && data[columns[0].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1 &&
+		data[columns[1].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1 &&
+		data[columns[2].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1 &&
+		data[columns[3].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1) {
+		return false;
+	}
+	return true;
+}
+
+$("#txtSearch").keyup(function(e) {
+	Slick.GlobalEditorLock.cancelCurrentEdit();
+
+	// clear on Esc
+	if (e.which == 27) {
+		this.value = "";
+	}
+
+	searchString = this.value;
+	updateFilter();
+});
+
+function updateFilter() {
+	dataView.setFilterArgs({
+		searchString: searchString
+	});
+	dataView.refresh();
+}
+
+function gridUpdate(data) {
+	dataView.beginUpdate();
+	dataView.setItems(data);
+
+	dataView.setFilterArgs({
+		searchString: searchString
+	});
+
+	dataView.setFilter(myFilter);
+
+	dataView.endUpdate();
+};
+
+// fill grid with data
+gridUpdate(data);
+
+window.onload = function() {
+	if(!window.location.hash) {
+		window.location = window.location + '#loaded';
+		window.location.reload();
+	}
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--
+################################################################################
+#
+# Master HTML portal page
+#
+#
+# Baohong Zhang
+#
+#
+# Oct. 2017
+#
+#################################################################################
+-->
+
+<html>
+<head>
+<title>TST11079 Effect of Cx3cr1 deletion on LPS-induced inflammatory reaction in microglia</title>
+<link rel="stylesheet" type="text/css" href="package/Nozzle/css/nozzle.css" media="screen">
+<link rel="stylesheet" type="text/css" href="package/Nozzle/css/nozzle.print.css" media="print">
+<link rel="stylesheet" type="text/css" href="package/fancybox/jquery.fancybox-1.3.4.css" media="screen">
+<style type="text/css">
+.report .title {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    font: bold x-large "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+    color: #000;
+}
+.section .sectionheader {
+	font: bold large "Helvetica Neue", Arial, Helvetica, Geneva, sans-serif;
+}
+body {
+	background-color: #eee;
+}
+.section {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+.section .sectionheader {
+    margin-top: 10px;
+}
+.sectionbody a {
+    color: #000077;
+}
+.report .main {
+# comment out the following line after screenshot
+#	overflow: visible;
+	margin-bottom: 8px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div style="display: none" id="mask">&nbsp;</div>
+<script type="text/javascript">
+document.getElementById("mask").style.display = "block";
+</script>
+
+
+<script type="text/javascript" src="package/Nozzle/js/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="package/Nozzle/js/jquery.tablesorter.js"></script>
+<script type="text/javascript" src="package/fancybox/jquery.fancybox-1.3.4.pack.js"></script>
+
+<script type="text/javascript" src="package/Nozzle/js/nozzle.js"></script>
+<script type="text/javascript" src="package/Nozzle/js/nozzleMeta.js"></script>
+<script type="text/javascript">
+	$(document).ready( function() {
+		initNozzle( "r100", $ );
+		$("a#single_image").fancybox();
+		toggleContents( $("[id^=result]"), false);
+});
+</script>
+
+<div class="report" id="r100">
+<div class="frame">
+<div class="main">
+
+<div class="title">TST11079 Effect of Cx3cr1 deletion on LPS-induced inflammatory reaction in microglia</div>
+
+<!-- Overview -->
+<div class="section" id="overview_r100">
+<div class="sectionheader"> Overview </div>
+<div class="sectionbody">
+It provides the QC metrics and expression tables, including overall read mapping statistics, QC report for each sample, interactive gene expression visualization and analytical tools to gain insights about the data. Please click on <img src=package/img/interactive.png> for interactive plots.
+</div>
+</div>
+
+
+
+<div class="section" id="results_team">
+<div class="sectionheader"> Team </div>
+<div class="sectionbody">
+Stefka Gyoneva1, Raghavendra Hosur, Anne C. Cotleur, David Gosselin, Zhengyu Ouyang, Michael Peterson, Ravi Challa, Patrick Cullen, Kelly Miao, Norm Allaire, Taylor L. Reynolds, Christopher K. Glass, Chris Roberts, Baohong Zhang, Linda Burkly and Richard M. Ransohoff
+</div>
+</div>
+
+<div class="section" id="results_sequencing">
+<div class="sectionheader">Sequencing Method </div>
+<div class="sectionbody">
+RNA (containing microRNAs) was isolated with the Qiagen Universal AllPrep kit (Qiagen 80004) according to the manufacturer's instruction. RNA samples were treated on the column with DNAse I (Qiagen 79254) to remove potential DNA contamination. RNA concentration was quantified with the Quant-iT RiboGreen reagent (Molecular Probes MP11490). RNA quality was determined on a Bioanalyzer with the RNA Pico 6000 kit (Agilent 5067-1513), according to the manufacturer's instructions. 
+<p>
+<br>
+Because of the low RNA content of microglia and our desire to use each animal as an individual sample, we employed low RNA input protocols for RNA-Seq library preparation. cDNA for RNA-Seq libraries was prepared using 10 ng of RNA using the SmartSeq v4 Ultra Low RNA Input Library prep protocol (Clontech 634889) according to the manufacturer's instruction. The cDNA (250 ng starting material) was then tagged and fragmented with the NexteraXT DNA Library Preparation kit (Illumina FC-131-1024) according to the manufacturer's instructions. Quality of amplified cDNA and fragmented libraries was assessed on a Bioanalyzer with the High Sensitivity DNA chips (Agilent 5067-4627). Tagged libraries were pooled (8 nM total DNA) and sequenced on an Illumina HiSeq2500 sequencer, with target depth of 20 million of 50 bp paired end reads.
+</div>
+</div>
+
+
+
+<!-- QC Metrics -->
+<div class="section" id="results1.0">
+<div class="sectionheader"> QC Metrics </div>
+<div class="sectionbody">
+
+<div class="figure" id="figures_r100">
+
+<table border=0 cellspacing=0 cellpadding=0 width=100%>
+
+<tr align=center>
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/star-mapping-summary.9x7.png"><img src="Summary/star-mapping-summary.9x7.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=qc_star-mapping-summary.html target=_blank><img src=package/img/interactive.png></a></td>
+	<td><a href=Summary/star-mapping-summary.txt target=_blank><p style="font-size:14px">Mapping Summary</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/fc-counting-summary.9x7.png"><img src="Summary/fc-counting-summary.9x7.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=qc_fc-counting-summary.html target=_blank><img src=package/img/interactive.png></a></td>
+	<td><a href=Summary/fc-counting-summary.txt target=_blank><p style="font-size:14px">Feature Counts</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	</td></tr>
+	<a id="single_image" href="Summary/RNASeq-snp-corr.9x7.png"><img src="Summary/RNASeq-snp-corr.9x7.png" width=160 height=160/></a>
+	<tr align=center>
+	<td><a href=longitudinal.html target=_blank><img src=package/img/interactive.png></a></td>
+	<td><a href=Summary/RNASeq-snp-corr.txt target=_blank><p style="font-size:14px">SNP Correlation</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/expr-count-gene.9x7.png"><img src="Summary/expr-count-gene.9x7.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=qc_expr_count.html target=_blank><img src=package/img/interactive.png></a></td>
+	<td><a href=Summary/expr-count-gene.txt target=_blank><p style="font-size:14px">Gene Expressed</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	</td></tr>
+	<a id="single_image" href="Summary/expr-gene-corr.9x7.png"><img src="Summary/expr-gene-corr.9x7.png" width=160 height=160/>
+	<tr align=center>
+	<td>&nbsp;</td>
+	<td><a href=Summary/expr-gene-corr.txt target=_blank><p style="font-size:14px">Expression Correlation</p></a></td>
+	</tr></table>
+	</td>
+</tr>
+<tr align=center>
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/expr-gene-pca.png"><img src="Summary/expr-gene-pca.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=Summary/expr-gene-pca.x.txt target=_blank><p style="font-size:14px">PCA</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/expr-gene-pca.var.png"><img src="Summary/expr-gene-pca.var.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=Summary/expr-gene-pca.var.txt target=_blank><p style="font-size:14px">PCA Variance</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	</td></tr>
+	<a id="single_image" href="Summary/expr-gene-boxplot.9x7.png"><img src="Summary/expr-gene-boxplot.9x7.png" width=160 height=160/></a>
+	<tr align=center>
+	<td><p style="font-size:14px">TPM Distribution</p></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/expr-gene-top30-across-samples.7x5.png"><img src="Summary/expr-gene-top30-across-samples.7x5.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=Summary/expr-gene-top30-across-samples.txt target=_blank><p style="font-size:14px">Top 30 Highly Expressed</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	</td></tr>
+	<a id="single_image" href="Summary/expr-gene-top10x.9x7.png"><img src="Summary/expr-gene-top10x.9x7.png" width=160 height=160/>
+	<tr align=center>
+	<td>&nbsp;</td>
+	<td><a href=Summary/expr-gene-top10x.txt target=_blank><p style="font-size:14px">TPM Occupancy</p></a></td>
+	</tr></table>
+	</td>
+</tr>
+<tr align=center>
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/rsem-gene-tpm-density-cdf.9x7.png"><img src="Summary/rsem-gene-tpm-density-cdf.9x7.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=Summary/expr-gene-pca.x.txt target=_blank><p style="font-size:14px">Density & CDF</p></a></td>
+	</tr></table>
+	</td>
+
+	<td>
+	<table><tr align=center>
+	<td colspan=2>
+	<a id="single_image" href="Summary/rsem-gene-tpm-density-zm.9x7.png"><img src="Summary/rsem-gene-tpm-density-zm.9x7.png" width=160 height=160/></a>
+	</td></tr>
+	<tr align=center>
+	<td><a href=Summary/rsem-gene-tpm-density.html target=_blank><img src=package/img/interactive.png></a></td>
+	<td><a href=Summary/expr-gene-pca.var.txt target=_blank><p style="font-size:14px">Density Zoom</p></a></td>
+	</tr></table>
+	</td>
+
+</tr>
+</table>
+
+</div>
+</div>
+</div>
+
+<!-- Parallel Plot of QC -->
+<div class="section" id="results_pp">
+<div class="sectionheader"> Parallel Plot of QC </div>
+<div class="sectionbody">
+<a href="qc_overview.html" target=_blank><img src=package/img/parallelplot.png border=1 width=100%></a>
+Click on the image above to access the interactive plot.  
+<a class="download" href="Summary/RNASeq-merged-metrics.txt">Raw Data</a>
+
+</div>
+</div>
+
+<!-- Expression Tables -->
+<div class="section" id="results_et">
+<div class="sectionheader">Expression Tables </div>
+<div class="sectionbody">
+<li><a href=gex_tpm.html target=_blank>TPM Values on Genes</a> <a href=gex_tpm.html target=_blank><img src=package/img/interactive.png></a>
+<li><a href=gex.html target=_blank>RPKM (FPKM) Values on Genes</a> <a href=gex.html target=_blank><img src=package/img/interactive.png></a>
+<li><a href=Summary/fc-gene-counts.txt>Raw Read Counts on Genes</a>
+
+</div>
+</div>
+
+
+<!-- Raw Data Files -->
+<div class="section">
+<div class="sectionheader"> Raw Data Files </div>
+<div class="sectionbody">
+<table>
+<tr><td><a href=Summary/sample.annotation.txt target=_blank>sample.annotation.txt</a></td><td>sample annotation file</td></tr>
+<tr><td><a href=Summary/run.config.txt target=_blank>run.config.txt</a></td><td>configuration file</td></tr>
+<tr><td><a href=Summary/star-mapping-summary.txt target=_blank>star-mapping-summary.txt</a></td><td>read mapping summary for STAR run</td></tr>
+<tr><td><a href=Summary/fc-counting-summary.txt target=_blank>fc-counting-summary.txt</a></td><td>read counting summary for featureCounts run</td></tr>
+<tr><td><a href=Summary/fc-gene-counts.txt target=_blank>fc-gene-counts.txt</a></td><td>gene counts table</td></tr>
+<tr><td><a href=Summary/fc-gene-rpkm.txt target=_blank>fc-gene-rpkm.txt</a></td><td>RPKM (FPKM) table, calculated from fc-gene-counts.txt</td></tr>
+<tr><td><a href=Summary/rsem-gene-tpm.txt target=_blank>rsem-gene-tpm.txt</a></td><td>TPM table, calculated by RSEM algorithm</td></tr>
+<tr><td><a href=Summary/expr-gene-corr.txt target=_blank>expr-gene-corr.txt</a></td><td>All-against-all gene expression correlation matrix</td></tr>
+<tr><td><a href=Summary/RNASeq-snp-corr.txt target=_blank>RNASeq-snp-corr.txt</a></td><td>All-against-all SNP correlation matrix</td></tr>
+<tr><td><a href=Summary/RNASeq-merged-metrics.txt target=_blank>RNASeq-merged-metrics.txt</a></td><td>Merged RNA-seq metrics from mapping, counting, distribution and QC</td></tr>
+</table>
+</div>
+</div>
+
+
+<!-- Reference -->
+<div class="section" id="references_r100">
+<div class="sectionheader"> References </div>
+<div class="sectionbody">
+
+<div class="reference" id="reference_1_r100">
+[1] Nils Gehlenborg, <a href="https://github.com/parklab/Nozzle">Nozzle.R1 Package</a> (2013)
+</div>
+<div class="reference" id="reference_2_r100">
+[2] <a href="http://rseqc.sourceforge.net/">RSeQC: An RNA-seq Quality Control Package</a>
+</div>
+<div class="reference" id="reference_3_r100">
+[3] <a href="http://bioinformatics.oxfordjournals.org/content/29/8/1089">N Gehlenborg, MS Noble, G Getz, L Chin and PJ Park, "Nozzle: a report generation toolkit for data analysis pipelines", Bioinformatics 29:1089-1091 (2013)</a>
+</div>
+<div class="reference" id="reference_4_r100">
+[4] <a href="http://d3js.org/">D3.js - Data-Driven Documents</a>
+</div>
+
+</div>
+</div>
+
+
+<!-- Credits -->
+<div class="maintainer">
+<script>document.write("Maintained by <span class=name><a href=mailto:"+nozzleMeta.maintainer.email+">"+nozzleMeta.maintainer.name+"</a></span>");</script>
+</div>
+
+<div class="credits">
+<span class="notice">
+<a href="http://www.github.com/parklab/Nozzle">Made with Nozzle</a>
+</span>
+</div>
+
+
+</div> <!-- main -->
+</div> <!-- frame -->
+</div> <!-- report -->
+</body>
+</html>

@@ -1,0 +1,38 @@
+args <- commandArgs(trailingOnly = TRUE)
+
+if ( length(args) < 3) {
+    print (paste0("Rscript ","plot-PCA.R"," <ColorBy> <ShapeBy> <PNG file name>"))
+    q(save = "no")
+}
+
+library(ggplot2)
+library(ggrepel)
+
+##### PCA Plot #####
+pca <- read.table(file="expr-gene-pca.x.txt",header=TRUE,sep="\t",check.names=FALSE)
+sample <- read.table(file="sample.annotation.txt",header=TRUE,sep="\t",check.names=FALSE)
+for (i in colnames(sample)) {if (class(sample[[i]]) == "factor") {sample[[i]] = factor(sample[[i]], levels = unique(sample[[i]])) } }
+pca_sample <- merge(x=pca, y=sample, by.x="Sample", by.y="Sample_ID")
+
+pca_var <- read.table(file="expr-gene-pca.var.txt",header=TRUE,sep="\t",check.names=FALSE)
+xlabs = paste0("PC1 (",round(pca_var[pca_var$PC == "PC1", "variance"],digits=2),"%)")
+ylabs = paste0("PC2 (",round(pca_var[pca_var$PC == "PC2", "variance"],digits=2),"%)")
+
+
+png(filename=paste0(args[3],".png"), width = 8, height = 7, units = "in", res=300)
+
+
+# tidy eval bang bang is available in ggplot2 > ver 3.0
+#plot = ggplot(pca_sample, aes(x=PC1, y=PC2)) + geom_point(aes(color = !!as.name(args[1]), shape = !!as.name(args[2]), fill=Sex), alpha = 0.8, size = 2) + xlab(xlabs) + ylab(ylabs) + geom_text_repel(aes(label =Sample),size=2.5)
+
+
+
+plot0 = ggplot(pca_sample, aes(x=PC1, y=PC2)) + geom_point(aes(color = Genotype,shape = Age, size=Sex, fill=factor(ifelse(Sex=="F",NA,Genotype))), alpha = 0.8) + xlab(xlabs) + ylab(ylabs) + scale_fill_discrete(na.value=NA,guide="none") + scale_shape_manual(values=c(21,22,23,24,25)) + theme_minimal()
+
+plot = plot0  + 
+  scale_size_manual(name = "Sex", values = c(3, 3)) +
+  # Remove fill legend and replace the fill legend using the newly created size
+  guides(fill = "none", size = guide_legend(override.aes = list(shape = c(1, 16))), shape = guide_legend(override.aes = list(size = 3)), color = guide_legend(override.aes = list(size = 3)))
+
+print(plot)
+dev.off()

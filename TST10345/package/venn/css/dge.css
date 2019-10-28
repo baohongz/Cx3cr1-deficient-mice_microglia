@@ -1,0 +1,145 @@
+
+/* Top level styling **********************************************/
+
+#loading { position: absolute; top: 100px; left: 250px; }
+
+#wrap > .container {
+  padding: 0 15px 0;
+  display: none;
+}
+
+.supported-by { font-size: 10px; }
+
+a#csv-download { font-size: 9pt; float: right; margin: -7px 30px 0 0; }
+
+/* Gene list (slickgrid) ********************************************/
+
+#gene-list-desc ul {
+  display: inline-block;
+}
+
+.pos { background-color: #dfd; height: 25px; }
+.neg { background-color: #fdd; height: 25px; }
+.nosig { opacity: 0.6; }
+
+/* Turn off bootstrap 3 "border-box" sizing - slickgrid no likey */
+#gene-table, #gene-table div {
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box;
+}
+
+#gene-table { height: 300px; }
+#gene-table-info { font-size: 9pt; }
+.slick-row { font-size: 9pt; }
+.slick-row:hover {
+  font-weight: bold;
+  color: #069;
+}
+.slick-header-column { height: auto !important; }
+
+/* Log message panel ****************************************************/
+
+.log-list {
+    display: none;
+    position: absolute;
+    top: 60px;
+    right: 60px;
+
+    border: thin solid black;
+    background: #ddd;
+    padding: 5px;
+    border-radius: 5px;
+    z-index: 99;
+    max-height: 600px;
+    overflow: scroll;
+}
+
+.log-list .error { color: red; }
+.log-list .warn { color: yellow; }
+.log-list .info { color: blue; }
+
+.log-link { opacity: 0.4; }
+
+/* List selector table ********************************************/
+
+.file { width: 185px; display: inline-block; }
+
+.selectable {
+    width: 50px;
+    display: inline-block;
+    text-align: right;
+    padding: 2px;
+}
+.selectable:hover {
+    text-decoration: underline;
+}
+
+.total { background-color: #ddd; text-align: right !important;}
+.up    { background-color: #dfd; }
+.down  { background-color: #fdd; }
+
+span.selected { border: 2px blue solid; padding: 0; }
+
+/* Options ********************************************************/
+.options {
+    background: #f4f4f4;
+    border-radius: 5px;
+    border: thin solid black;
+    padding: 10px;
+    margin-bottom: 5px;
+}
+
+input.fdr-fld { width: 70px; }
+div#fdrSlider { display: inline-block; width: 130px; margin: 0 5px; }
+.fdr strong   { display: inline-block; width: 120px; }
+
+input.fc-fld { width: 70px; }
+div#fcSlider { display: inline-block; width: 130px; margin: 0 5px; }
+.fc strong   { display: inline-block; width: 120px; }
+
+.proportional { margin-top: 20px; }
+
+.error { background-color: #fbb; }
+
+
+/* Venn diagram and Venn table *****************************************/
+
+#overlaps #venn {
+  overflow: visible;
+}
+
+#overlaps #venn-table {
+  margin-left: 80px;
+  margin-top: 100px;
+}
+
+#overlaps #not-supported {
+  font-size: 18px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20em;
+  margin-top: 100px;
+}
+
+
+#overlaps td.ticks {
+  padding-right: 35px;
+}
+
+#venn text.lbl:hover {
+    text-decoration: initial;
+}
+
+.rotate {
+  -o-transform:      rotate(-45deg);
+  -khtml-transform:  rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+  -moz-transform:    rotate(-45deg);
+
+  width: 20px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+

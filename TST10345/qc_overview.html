@@ -1,0 +1,706 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<!-- SlickGrid -->
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/slick.grid.css"/>
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/css/smoothness/jquery-ui-1.11.4.css"/>
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/examples/examples.css"/>
+<link rel="stylesheet" type="text/css" href="package/SlickGrid/controls/slick.pager.css"/>
+<link rel="stylesheet" type="text/css" href="package/d3/d3.parcoords.css">
+
+</head>
+
+<body>
+
+<script type="text/javascript" src="package/jquery.js"></script>
+<script type="text/javascript" src="package/jquery.ui.js"></script>
+<script type="text/javascript" src="package/jquery.ui.sortable.js"></script>
+<script type="text/javascript" src="package/jquery.ui.button.js"></script>
+<script type="text/javascript" src="package/jquery.ui.dialog.js"></script>
+<script type="text/javascript" src="package/d3/d3.min.js"></script>
+<script type="text/javascript" src="package/d3/d3.parcoords.js"></script>
+<script type="text/javascript" src="package/SlickGrid/divgrid.js"></script>
+<script type="text/javascript" src="package/SlickGrid/lib/jquery.event.drag-2.2.js"></script>
+<script type="text/javascript" src="package/SlickGrid/slick.core.js"></script>
+<script type="text/javascript" src="package/SlickGrid/slick.grid.js"></script>
+<script type="text/javascript" src="package/SlickGrid/slick.dataview.js"></script>
+<script type="text/javascript" src="package/SlickGrid/controls/slick.pager.js"></script>
+
+<!-- End SlickGrid -->
+
+
+<style>
+.ui-widget, .tick {
+  font-family: arial;
+  font-size: 8pt;    
+}
+
+body, html {
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  background-color: white;
+}
+body {
+  overflow-y: scroll;
+}
+
+#grid, #pager {
+  width: 100%;
+}
+#grid {
+  bottom: 0;
+  height: 300px;
+}
+#pager {
+  bottom: 306px;
+  height: 20px;
+}
+.slick-row:hover {
+  font-weight: bold;
+  color: #069;
+}
+</style>
+
+</head>
+
+<div id="dataset" style="display:none;">
+Sample	Subject_ID	Cell_Type	Genotype	Age	Sex	Treatment	Total_reads	Uniq_Rate	Multi_Rate	Unmap_Rate	Uniq_Mapped_Reads	Gene_Rate	Ambiguity_Rate	No_Feature_Rate	Avg_Corr	Corr_diff	MADScore	isOutlier	Pct_MT	Pct_Top1	Pct_Top10
+2mo-WT-10F	subject10	Microglia	WT	2m	F	None	18904359	86.61	4.36	9.03	16372249	81.15	4.11	14.74	0.86	0	-0.36	N	0	5.7	16
+2mo-WT-11F	subject11	Microglia	WT	2m	F	None	17493577	87.71	4.2	8.09	15343279	81.36	4.04	14.6	0.86	0	-0.63	N	0	5.6	16
+2mo-WT-6F	subject6	Microglia	WT	2m	F	None	19200414	86.53	4.56	8.91	16615030	83.59	4.19	12.21	0.86	-0.01	-1.3	N	0	6.1	16.3
+2mo-WT-7F	subject7	Microglia	WT	2m	F	None	19854165	84.06	4.65	11.29	16688759	76.05	3.87	20.09	0.85	-0.01	-2.38	N	0	5.8	16
+2mo-WT-8F	subject8	Microglia	WT	2m	F	None	16939381	85.06	4.2	10.74	14409067	77.23	3.88	18.89	0.85	-0.01	-2.73	N	0	5.5	15.8
+2mo-WT-9F	subject9	Microglia	WT	2m	F	None	18299805	86.42	4.62	8.96	15815434	74.09	3.85	22.06	0.86	-0.01	-1.51	N	0	5.4	16
+2mo-WT-1M	subject1	Microglia	WT	2m	M	None	18946075	87.09	4.34	8.57	16501047	81.14	4	14.87	0.86	-0.01	-1.56	N	0	5.6	15.6
+2mo-WT-2M	subject2	Microglia	WT	2m	M	None	20410378	87.58	4.3	8.12	17875410	81.09	3.88	15.03	0.86	0	-1.21	N	0	5.6	15.5
+2mo-WT-3M	subject3	Microglia	WT	2m	M	None	19467088	86.91	4.32	8.77	16919219	79.05	3.9	17.05	0.86	0	-1.12	N	0	5.5	15.6
+2mo-WT-4M	subject4	Microglia	WT	2m	M	None	20159788	85.92	4.47	9.61	17321568	77.6	3.88	18.52	0.85	-0.01	-1.98	N	0	5.6	15.6
+2mo-WT-5M	subject5	Microglia	WT	2m	M	None	19610035	85.04	4.67	10.29	16675780	75.17	3.83	20.99	0.85	-0.02	-3.19	N	0	5.3	15.7
+2mo-Het-3F	subject14	Microglia	Het	2m	F	None	19497928	87.88	4.16	7.96	17134687	80.78	4	15.21	0.87	0.01	0.56	N	0	5.2	15.3
+2mo-Het-4F	subject15	Microglia	Het	2m	F	None	19409670	87.86	4.21	7.93	17053063	81.59	4.02	14.39	0.87	0.01	0.8	N	0	5.3	15.4
+2mo-Het-5F	subject16	Microglia	Het	2m	F	None	16006610	85.59	4.59	9.82	13700572	76.9	3.92	19.19	0.86	-0.01	-1.71	N	0	5.5	15.8
+2mo-Het-6F	subject17	Microglia	Het	2m	F	None	19763628	81.17	4.29	14.54	16042900	73.12	3.67	23.22	0.84	-0.02	-4.36	N	0	5.1	15.4
+2mo-Het-10M	subject20	Microglia	Het	2m	M	None	20411729	85.03	4.62	10.35	17355249	72.3	3.65	24.05	0.85	-0.01	-2.81	N	0	5.4	15.5
+2mo-Het-1M	subject12	Microglia	Het	2m	M	None	17535354	87.77	4.18	8.05	15390432	82.08	3.96	13.96	0.87	0	0.4	N	0	5.7	16
+2mo-Het-2M	subject13	Microglia	Het	2m	M	None	21188747	87.98	4.2	7.82	18642144	81.19	3.9	14.9	0.87	0.01	0.79	N	0	5.6	15.7
+2mo-Het-7M	subject18	Microglia	Het	2m	M	None	20134597	87.17	4.25	8.58	17551946	78.84	3.96	17.2	0.86	0	-0.41	N	0	5.3	15.8
+2mo-Het-9M	subject19	Microglia	Het	2m	M	None	20124468	85.83	4.41	9.76	17272934	72.85	3.66	23.49	0.85	-0.01	-1.74	N	0	4.7	14.9
+2mo-KO-4F	subject22	Microglia	KO	2m	F	None	18814759	87.07	4.37	8.56	16382307	80.64	4.03	15.34	0.87	0	0.28	N	0	5.6	16.4
+2mo-KO-5F	subject23	Microglia	KO	2m	F	None	20077421	87.29	4.33	8.38	17526561	79.88	4.03	16.09	0.87	0.01	0.55	N	0	5.6	16.5
+2mo-KO-6F	subject24	Microglia	KO	2m	F	None	16767338	87.55	4.28	8.17	14680314	80.76	3.93	15.31	0.87	0	0.38	N	0	5.3	15.8
+2mo-KO-7F	subject25	Microglia	KO	2m	F	None	20683636	81.84	5.01	13.15	16926596	70.16	4.05	25.79	0.84	-0.03	-4.81	N	0	8.3	22.3
+2mo-KO-8F	subject26	Microglia	KO	2m	F	None	19724601	82	4.93	13.07	16173400	72.25	4.04	23.71	0.84	-0.02	-4.1	N	0	7.8	21.4
+2mo-KO-10M	subject28	Microglia	KO	2m	M	None	18391624	87.47	4.24	8.29	16087876	78.82	3.9	17.29	0.87	0	0.26	N	0	5.3	15.7
+2mo-KO-11M	subject29	Microglia	KO	2m	M	None	16936299	87.28	4.35	8.37	14782758	79.75	4.01	16.24	0.86	0	-0.47	N	0	5.1	15.7
+2mo-KO-12M	subject30	Microglia	KO	2m	M	None	18454148	87.78	4.22	8	16199371	81.99	4.05	13.96	0.86	0	-0.08	N	0	5	15.5
+2mo-KO-13M	subject31	Microglia	KO	2m	M	None	17300935	85.69	4.55	9.76	14824552	75	3.84	21.16	0.86	0	-0.74	N	0	4.8	15.5
+2mo-KO-2M	subject21	Microglia	KO	2m	M	None	21436635	81.99	4.62	13.39	17576281	79.45	3.9	16.66	0.85	-0.02	-3.11	N	0	7.2	18.3
+2mo-KO-9M	subject27	Microglia	KO	2m	M	None	21016096	87.29	4.31	8.4	18343959	82.5	4.05	13.45	0.87	0.01	0.54	N	0	5.3	15.7
+1yr-WT-2F	subject32	Microglia	WT	1y	F	None	19808357	87.33	4.02	8.65	17298416	77.95	3.75	18.3	0.86	0	-0.04	N	0	5.1	15.2
+1yr-WT-3F	subject33	Microglia	WT	1y	F	None	17032558	86.06	4.18	9.76	14658644	76.65	4.02	19.33	0.86	0	-0.78	N	0	6.1	17.2
+1yr-WT-4F	subject34	Microglia	WT	1y	F	None	18902841	85.89	4.24	9.87	16236112	79.16	4.02	16.82	0.86	0	0	N	0	5.6	16.3
+1yr-WT-5F	subject35	Microglia	WT	1y	F	None	18201876	84.97	4.29	10.74	15466401	77.39	4.06	18.56	0.86	0	-0.98	N	0	5.9	17
+1yr-WT-6F	subject36	Microglia	WT	1y	F	None	19423623	87.76	4.14	8.1	17046198	80.16	3.91	15.93	0.87	0.01	0.84	N	0	5.2	15.4
+1yr-WT-7F	subject37	Microglia	WT	1y	F	None	16657329	85.53	4.31	10.16	14247664	82.17	3.99	13.84	0.86	0	-0.3	N	0	5.5	15.6
+1yr-WT-8F	subject38	Microglia	WT	1y	F	None	17939667	86.5	4.18	9.32	15518410	81.41	3.92	14.67	0.87	0	0.12	N	0	5.3	15.4
+1yr-WT-10M	subject40	Microglia	WT	1y	M	None	16949235	81.65	4.35	14	13839846	85.24	4.19	10.56	0.85	-0.01	-2.16	N	0	4.9	15.6
+1yr-WT-11M	subject41	Microglia	WT	1y	M	None	16712616	81.85	4.63	13.52	13679842	83.56	4.28	12.17	0.86	-0.01	-1.33	N	0	6.5	17.2
+1yr-WT-9M	subject39	Microglia	WT	1y	M	None	18634879	81.95	4.44	13.61	15271321	83.67	4.18	12.15	0.86	0	-1.27	N	0	6	16.4
+1yr-Het-1F	subject42	Microglia	Het	1y	F	None	21114493	83.14	4.68	12.18	17554839	78.92	4.31	16.77	0.86	-0.01	-1.67	N	0	6.6	19.6
+1yr-Het-5F	subject45	Microglia	Het	1y	F	None	17900099	86.76	4.01	9.23	15530330	77.23	3.9	18.87	0.86	0	-0.73	N	0	5.3	16.2
+1yr-Het-6F	subject46	Microglia	Het	1y	F	None	13932054	84.72	3.96	11.32	11802922	78.06	3.84	18.1	0.85	-0.01	-2.2	N	0	5.2	15.5
+1yr-Het-7F	subject47	Microglia	Het	1y	F	None	16171291	86.01	4.36	9.63	13909217	81.04	4.08	14.88	0.86	0	-0.94	N	0	5.4	15.9
+1yr-Het-8F	subject48	Microglia	Het	1y	F	None	16421962	81.11	4.26	14.63	13319104	78.6	4.12	17.28	0.85	-0.01	-2.86	N	0	6.4	17.5
+1yr-Het-9F	subject49	Microglia	Het	1y	F	None	18563912	86.28	4.37	9.35	16016812	78.6	4.11	17.3	0.87	0	0.21	N	0	5.8	16.8
+1yr-Het-11M	subject50	Microglia	Het	1y	M	None	20381975	86.91	4.22	8.87	17713708	79.19	3.91	16.9	0.87	0.01	0.56	N	0	5.3	15.6
+1yr-Het-12M	subject51	Microglia	Het	1y	M	None	19063364	86.9	4.32	8.78	16566834	80.91	3.96	15.12	0.87	0.01	0.66	N	0	5.1	15.3
+1yr-Het-14M	subject52	Microglia	Het	1y	M	None	18020616	83.25	4.39	12.36	15001438	78.5	3.97	17.53	0.86	-0.01	-1.42	N	0	6	16.4
+1yr-Het-2M	subject43	Microglia	Het	1y	M	None	17463825	86.8	4.37	8.83	15158429	82.76	4.13	13.11	0.87	0.01	0.65	N	0	5.8	16.3
+1yr-Het-4M	subject44	Microglia	Het	1y	M	None	18192458	86.25	4.32	9.43	15690329	82.52	4.06	13.42	0.87	0	0.02	N	0	5.4	15.6
+1yr-KO-11F	subject60	Microglia	KO	1y	F	None	18046260	84.21	4.36	11.43	15195932	76.42	4.1	19.48	0.85	-0.01	-1.73	N	0	5.8	17.7
+1yr-KO-1F	subject53	Microglia	KO	1y	F	None	17424405	85.32	4.24	10.44	14866900	80.97	4.14	14.89	0.86	0	-0.83	N	0	5.3	16.2
+1yr-KO-2F	subject54	Microglia	KO	1y	F	None	16872280	87.2	4.11	8.69	14712961	79.43	3.99	16.58	0.87	0.01	0.53	N	0	5	15.9
+1yr-KO-3F	subject59	Microglia	KO	1y	F	None	18603109	87.41	4.09	8.5	16261290	79.51	3.94	16.54	0.87	0	0.36	N	0	5	15.8
+1yr-KO-8F	subject57	Microglia	KO	1y	F	None	15802629	87.03	4	8.97	13753152	77.34	3.96	18.7	0.86	0	-0.64	N	0	4.9	16.1
+1yr-KO-9F	subject58	Microglia	KO	1y	F	None	20380665	85.45	4.01	10.54	17415918	78.72	3.98	17.3	0.86	0	-0.61	N	0	5.1	16
+1yr-KO-13M	subject61	Microglia	KO	1y	M	None	17885226	87.14	4.49	8.37	15584300	82.43	4.02	13.55	0.87	0.01	0.84	N	0	5.6	15.9
+1yr-KO-14M	subject62	Microglia	KO	1y	M	None	17455616	87.21	4.31	8.48	15222772	81.25	4.01	14.74	0.87	0	0.03	N	0	5.7	16.2
+1yr-KO-15M	subject63	Microglia	KO	1y	M	None	17160388	84.93	4.48	10.59	14575101	80.1	4	15.91	0.86	0	-0.43	N	0	6	16.6
+1yr-KO-16M	subject64	Microglia	KO	1y	M	None	16889153	86.82	4.55	8.63	14662521	80.92	4.08	15.01	0.87	0.01	0.8	N	0	6	16.8
+1yr-KO-6M	subject55	Microglia	KO	1y	M	None	17808713	86.34	4.4	9.26	15376813	81.65	4.17	14.18	0.87	0.01	0.5	N	0	5.8	16.8
+1yr-KO-7M	subject56	Microglia	KO	1y	M	None	18033050	86.37	4.44	9.19	15574468	82.48	4.22	13.3	0.87	0.01	0.42	N	0	5.9	16.8
+2yr-WT-1F	subject65	Microglia	WT	2y	F	None	17020684	88.74	4.22	7.04	15104610	80.31	3.93	15.75	0.87	0.01	0.42	N	0	5.7	16.1
+2yr-WT-2F	subject66	Microglia	WT	2y	F	None	20941407	88.34	4.52	7.14	18499821	78.56	3.79	17.65	0.85	-0.02	-3.39	N	0	2.3	12.3
+2yr-WT-3F	subject67	Microglia	WT	2y	F	None	19720881	88.98	3.98	7.04	17548308	80.25	3.93	15.82	0.87	0.01	0.67	N	0	5	15.6
+2yr-WT-5F	subject69	Microglia	WT	2y	F	None	19582557	88.92	4.07	7.01	17412057	81.66	4.08	14.26	0.87	0.01	1.24	N	0	5.4	16
+2yr-WT-6F	subject70	Microglia	WT	2y	F	None	18077234	88.98	4.2	6.82	16084476	82.75	4.12	13.12	0.87	0.01	0.96	N	0	5.2	15.8
+2yr-WT-7F	subject71	Microglia	WT	2y	F	None	17340488	88.6	4.04	7.36	15364196	76.22	3.87	19.91	0.86	0	-0.17	N	0	4.8	16
+2yr-WT-8F	subject72	Microglia	WT	2y	F	None	19379696	87.82	4.02	8.16	17019475	79.19	3.88	16.93	0.86	0	-0.24	N	0	5.5	16.7
+2yr-WT-10M	subject74	Microglia	WT	2y	M	None	20347211	88.11	4.1	7.79	17928722	79.41	3.82	16.77	0.87	0.01	0.49	N	0	5.7	15.8
+2yr-WT-4M	subject68	Microglia	WT	2y	M	None	20107699	88.29	4.48	7.23	17752454	84.33	4.1	11.57	0.87	0.01	0.51	N	0	6	15.8
+2yr-WT-9M	subject73	Microglia	WT	2y	M	None	17439361	88.58	4.1	7.32	15447393	79.97	3.99	16.04	0.87	0.01	0.55	N	0	5.6	16.1
+2yr-Het-2F	subject76	Microglia	Het	2y	F	None	19297319	89.01	4.05	6.94	17176402	81.33	4.04	14.63	0.87	0.01	1.04	N	0	4.7	15.3
+2yr-Het-6F	subject80	Microglia	Het	2y	F	None	20159656	88.7	4.22	7.08	17882005	83.5	4.15	12.35	0.87	0.01	1.62	N	0	5.2	15.7
+2yr-Het-7F	subject81	Microglia	Het	2y	F	None	15727421	88.62	4.07	7.31	13937158	80.34	4.02	15.64	0.86	0	-0.04	N	0	5.2	15.9
+2yr-Het-8F	subject82	Microglia	Het	2y	F	None	19493535	88.1	3.74	8.16	17172903	77.95	3.84	18.21	0.86	0	-0.56	N	0	4.1	15.2
+2yr-Het-1M	subject75	Microglia	Het	2y	M	None	19783560	88.9	4.14	6.96	17586721	82.53	4.02	13.45	0.87	0.01	0.95	N	0	5.2	15.4
+2yr-Het-3M	subject77	Microglia	Het	2y	M	None	20167126	88.9	4.04	7.06	17928560	82.35	4.16	13.49	0.87	0.01	0.84	N	0	5.2	15.7
+2yr-Het-4M	subject78	Microglia	Het	2y	M	None	18062534	88.03	4.18	7.79	15901281	81.5	3.91	14.59	0.87	0	0.24	N	0	5.6	15.6
+2yr-Het-5M	subject79	Microglia	Het	2y	M	None	17678455	88.84	4.15	7.01	15704938	83.69	4.13	12.19	0.87	0.01	0.45	N	0	5.4	15.7
+2yr-KO-4F	subject86	Microglia	KO	2y	F	None	17948917	88.4	3.98	7.62	15867419	81	4.09	14.91	0.86	0	-0.37	N	0	4.7	15.7
+2yr-KO-7F	subject88	Microglia	KO	2y	F	None	18285075	88.02	4.21	7.77	16094595	81.91	4.3	13.79	0.87	0.01	0.79	N	0	5.8	17.3
+2yr-KO-8F	subject89	Microglia	KO	2y	F	None	16300273	88.42	4.23	7.35	14411987	80.51	4.1	15.39	0.87	0	0.26	N	0	4.9	15.8
+2yr-KO-9F	subject90	Microglia	KO	2y	F	None	17901668	87.66	4.33	8.01	15691754	79.75	4.2	16.05	0.87	0.01	0.75	N	0	5.7	16.9
+2yr-KO-10M	subject91	Microglia	KO	2y	M	None	17925995	88.12	4.22	7.66	15796332	81.96	4.14	13.9	0.87	0.01	0.62	N	0	5.6	16.5
+2yr-KO-11M	subject92	Microglia	KO	2y	M	None	19272100	88.28	4.38	7.34	17013855	86.1	4.37	9.52	0.87	0.01	1.19	N	0	6.1	16.9
+2yr-KO-12M	subject93	Microglia	KO	2y	M	None	17534985	87.97	4.26	7.77	15424747	80.25	3.91	15.83	0.87	0.01	0.7	N	0	5.6	15.9
+2yr-KO-1M	subject83	Microglia	KO	2y	M	None	18233801	88.85	4.21	6.94	16199966	83.06	4.33	12.61	0.87	0	0.28	N	0	4.1	16.1
+2yr-KO-2M	subject84	Microglia	KO	2y	M	None	17427145	88.88	4.04	7.08	15489932	80.87	4.05	15.08	0.87	0	0.36	N	0	5	16.2
+2yr-KO-3M	subject85	Microglia	KO	2y	M	None	17941729	88.63	4.04	7.33	15902643	80.27	3.91	15.81	0.87	0.01	0.49	N	0	5.4	15.7
+2yr-KO-6M	subject87	Microglia	KO	2y	M	None	17913519	88.52	4.08	7.4	15857793	79.36	3.94	16.7	0.87	0.01	0.66	N	0	5.5	16.3
+</div>
+
+<div id="canvas1" class="parcoords" style="height:400px;"></div>
+
+<div style="padding:4px;font-size:10pt;">
+<b>Controls:</b> 
+<b>Brush</b> - Drag vertically along an axis.
+<b>Remove Brush</b> - Tap the axis background.
+<b>Reorder Axes</b> - Drag an axis label horizontally.
+<b>Color Lines by Values</b> - Click on an axis label.
+<b>Invert Axis</b> - Double click on an axis label.
+<b>Remove Axis</b> - Drag axis label off the left or the right edge.
+<b>Tooltip</b> - Click on a line to show values, move out of the canvas to remove tooptip.
+</div>
+
+<hr>
+<div id="dialog_Total_reads" title="Total_reads" style="display:none;">
+  <p>Total number of sequencing reads from raw fastq file</p>
+</div>
+<div id="dialog_Uniq_Rate" title="Uniq_Rate" style="display:none;">
+  <p>Percentage of reads uniquely mapped to the reference genome.</p>
+</div>
+<div id="dialog_Multi_Rate" title="Multi_Rate" style="display:none;">
+  <p>Percentage of reads mapped equally well to multiple locations on the reference genome.</p>
+</div>
+<div id="dialog_Unmap_Rate" title="Unmap_Rate" style="display:none;">
+  <p>Percentage of reads not mapped to the reference genome.</p>
+</div>
+<div id="dialog_Uniq_Mapped_Reads" title="Uniq_Mapped_Reads" style="display:none;">
+  <p>Number of uniquely mapped reads.</p>
+</div>
+<div id="dialog_Gene_Rate" title="Gene_Rate" style="display:none;">
+  <p>Percentage of reads mapped to unique gene region, including Exons, UTRs and Introns.</p>
+</div>
+<div id="dialog_Ambiguity_Rate" title="Ambiguity_Rate" style="display:none;">
+  <p>Percentage of reads mapped to gene-overlapping region and can't be unambiguously assigned to either gene.</p>
+</div>
+<div id="dialog_No_Feature_Rate" title="No_Feature_Rate" style="display:none;">
+  <p>Percentage of reads mapped to unannotated genomic regions.</p>
+</div>
+<div id="dialog_Total_Tags" title="Total_Tags" style="display:none;">
+  <p>Total number of tags (reads, one paired-end read counted as two reads)</p>
+</div>
+<div id="dialog_CDS_Exon" title="CDS_Exon" style="display:none;">
+  <p>Percentage of mapped reads on Exons.</p>
+</div>
+<div id="dialog_5UTR_Exon" title="5UTR_Exon" style="display:none;">
+  <p>Percentage of mapped reads on 5' UTR.</p>
+</div>
+<div id="dialog_3UTR_Exon" title="3UTR_Exon" style="display:none;">
+  <p>Percentage of mapped reads on 3' UTR.</p>
+</div>
+<div id="dialog_Introns" title="Introns" style="display:none;">
+  <p>Percentage of mapped reads on Introns.</p>
+</div>
+<div id="dialog_Intergenic" title="Intergenic" style="display:none;">
+  <p>Percentage of mapped reads on Intergenic regions.</p>
+</div>
+<div id="dialog_Counted_Reads" title="Counted_Reads" style="display:none;">
+  <p>Reads counted by featureCounts (=uniquely mapped read  * uniq_rate)</p>
+</div>
+<div id="dialog_Norm_Factor" title="Norm_Factor" style="display:none;">
+  <p>Normalization factor calculated by edgeR</p>
+</div>
+<div id="dialog_Avg_Corr" title="Avg_Corr" style="display:none;">
+  <p>Average correlation where this sample is involved</p>
+</div>
+<div id="dialog_Corr_diff" title="Corr_diff" style="display:none;">
+  <p>
+Avg_Corr : Average correlation where this sample is involved; <br><br>
+Avg_Rest : Average correlation where this sample is NOT involved; <br><br>
+Corr_diff : The difference between Avg_Corr and Avg_Rest.</p>
+</div>
+<div id="dialog_MADScore" title="MADScore" style="display:none;">
+  <p>
+(1) For each sample, calculate the correlation difference. This is simply a difference between the average of all the pair wise correlations that involve the sample (for the same group) and the average of all the pair wise correlations that do not involve the sample. For example, if we have a, b, c, d for group 1, the correlation difference of sample a is:<br><br>
+The difference of Average (correlation(a, b), correlation(a, c), correlation(a, d)) and Average (correlation(b, c), correlation (b, d), correlation(c, d)). You can see that if sample a is an outlier, then the difference will be negative.<br><br>
+(2) Now we have a vector of values (one for each sample). We simply convert this vector to MAD scores (robust Z-scores) by subtracting the medians then dividing it by median absolute deviations (MAD). We use a standard MAD cutoff (e.g. -5) to determine the outliers.</p>
+</div>
+
+<table border=0>
+<tr><td>
+Search: <input type="text" id="txtSearch" value="">
+</td><td>Right click on a column header to show the explanation.</td></tr>
+</table>
+
+<div id="grid"></div>
+<div id="pager"></div>
+
+
+<script type="text/javascript">
+
+var color_set = d3.scale.linear().range(["#3182bd", "#f33"]);
+
+var parcoords = d3.parcoords()("#canvas1")
+	.alpha(0.4)
+	.mode("queue") // progressive rendering
+	.height(400)
+	.margin({
+		top: 36,
+		left: 0,
+		right: 0,
+		bottom: 16
+	});
+
+// load tsv file and create the chart
+
+var dataset = d3.select('#dataset').text().replace(/^\s+|\s+$/g, '');
+var data = d3.tsv.parse(dataset);
+
+
+data.forEach(function(d, i) {
+	d.id = d.id || i;
+});
+
+parcoords
+	.data(data)
+	.hideAxis(["id", "Avg_Corr", "Corr_diff"])
+	.render()
+	.margin({
+		top: 40,
+		right: 20,
+		bottom: 20,
+		left: 50
+	})
+	.reorderable()
+	.brushMode("1D-axes");
+
+// setting up grid
+var column_keys = d3.keys(data[0]);
+var columns = column_keys.map(function(key, i) {
+	return {
+		id: key,
+		name: key,
+		field: key,
+		sortable: true
+	}
+});
+
+
+// update_colors(d3.keys(data[0])[2]);
+
+// click label to activate coloring
+parcoords.svg.selectAll(".dimension")
+	.on("click", update_colors)
+	.selectAll(".label")
+	.style("font-size", "10px"); // change font sizes of selected label
+
+
+//add hover event
+d3.select("#canvas1 svg")
+	.on("click", function() {
+		var mousePosition = d3.mouse(this);
+		highlightLineOnClick(mousePosition, true); //true will also add tooltip
+	})
+	.on("mouseout", function() {
+		cleanTooltip();
+		parcoords.unhighlight();
+	});
+
+
+// update color and font weight of chart based on axis selection
+// modified from here: https://syntagmatic.github.io/parallel-coordinates/
+function update_colors(dimension) {
+
+console.log(dimension);
+
+	// change the fonts to bold
+	parcoords.svg.selectAll(".dimension")
+		.style("font-weight", "normal")
+		.filter(function(d) {
+			return d == dimension;
+		})
+		.style("font-weight", "bold");
+
+	// change color of lines
+	// set domain of color scale
+	var values0 = getActiveData().map(function(d) {
+		return d[dimension];
+	});
+	values = values0.map(function(d) {return parseFloat(d)});
+
+	if (isNaN(values[0])) {
+		var n = {},j=1,i;
+		for(i = 0; i < values0.length; i++) {
+			if (!n[values0[i]]) {
+				n[values0[i]] = j++; 
+			}
+		}
+		for(i = 0; i < values.length; i++) {
+			values[i] = n[values0[i]];
+		}
+	}
+
+	color_set.domain([d3.min(values), d3.max(values)]);
+
+	// change colors for each line
+//	parcoords.color(function(d) {
+//		return color_set([d[dimension]])
+//	}).render();
+
+	parcoords.color(function(d,i) {
+		return color_set(values[i])
+	}).render();
+};
+
+
+// Add highlight for every line on click
+function getCentroids(data) {
+	// this function returns centroid points for data. I had to change the source
+	// for parallelcoordinates and make compute_centroids public.
+	// I assume this should be already somewhere in graph and I don't need to recalculate it
+	// but I couldn't find it so I just wrote this for now
+	var margins = parcoords.margin();
+	var graphCentPts = [];
+
+	data.forEach(function(d) {
+
+		var initCenPts = parcoords.compute_centroids(d).filter(function(d, i) {
+			return i % 2 == 0;
+		});
+
+		// move points based on margins
+		var cenPts = initCenPts.map(function(d) {
+			return [d[0] + margins["left"], d[1] + margins["top"]];
+		});
+
+		graphCentPts.push(cenPts);
+	});
+
+	return graphCentPts;
+}
+
+function getActiveData() {
+	// I'm pretty sure this data is already somewhere in graph
+	if (parcoords.brushed() != false) return parcoords.brushed();
+	return parcoords.data();
+}
+
+function isOnLine(startPt, endPt, testPt, tol) {
+	// check if test point is close enough to a line
+	// between startPt and endPt. close enough means smaller than tolerance
+	var x0 = testPt[0];
+	var y0 = testPt[1];
+	var x1 = startPt[0];
+	var y1 = startPt[1];
+	var x2 = endPt[0];
+	var y2 = endPt[1];
+	var Dx = x2 - x1;
+	var Dy = y2 - y1;
+	var delta = Math.abs(Dy * x0 - Dx * y0 - x1 * y2 + x2 * y1) / Math.sqrt(Math.pow(Dx, 2) + Math.pow(Dy, 2));
+	//console.log(delta);
+	if (delta <= tol) return true;
+	return false;
+}
+
+function findAxes(testPt, cenPts) {
+	// finds between which two axis the mouse is
+	var x = testPt[0];
+	var y = testPt[1];
+
+	// make sure it is inside the range of x
+	if (cenPts[0][0] > x) return false;
+	if (cenPts[cenPts.length - 1][0] < x) return false;
+
+	// find between which segment the point is
+	for (var i = 0; i < cenPts.length; i++) {
+		if (cenPts[i][0] > x) return i;
+	}
+}
+
+function cleanTooltip() {
+	// removes any object under #tooltip is
+	parcoords.svg.selectAll("#tooltip")
+		.remove();
+}
+
+function addTooltip(clicked, clickedCenPts) {
+
+	// add tooltip to multiple clicked lines
+	var clickedDataSet = [];
+	var margins = parcoords.margin();
+	var dim = parcoords.dimensions();
+
+	// get all the values into a single list
+	// I'm pretty sure there is a better way to write this is Javascript
+	for (var i = 0; i < clicked.length; i++) {
+//console.log(clicked[i]);
+		for (var j = 0; j < clickedCenPts[i].length; j++) {
+// Baohong: fix the bug here, should match displaying axis
+//			var text = d3.values(clicked[i])[j];
+			var text = String(clicked[i][dim[j]]); // It must be String type
+			// not clean at all!
+			var x = clickedCenPts[i][j][0] - margins.left;
+			var y = clickedCenPts[i][j][1] - margins.top;
+			clickedDataSet.push([x, y, text]);
+		}
+	};
+
+
+	// add rectangles
+	var fontSize = 14;
+	var padding = 2;
+	var rectHeight = fontSize + 2 * padding; //based on font size
+
+	parcoords.svg.selectAll("rect[id='tooltip']")
+		.data(clickedDataSet).enter()
+		.append("rect")
+		.attr("x", function(d) {
+			return d[0] - d[2].length * 5;
+		})
+		.attr("y", function(d) {
+			return d[1] - rectHeight + 2 * padding;
+		})
+		.attr("rx", "2")
+		.attr("ry", "2")
+		.attr("id", "tooltip")
+		.attr("fill", "grey")
+		.attr("opacity", 0.9)
+		.attr("width", function(d) {
+			return d[2].length * 10;
+		})
+		.attr("height", rectHeight);
+
+	// add text on top of rectangle
+	parcoords.svg.selectAll("text[id='tooltip']")
+		.data(clickedDataSet).enter()
+		.append("text")
+		.attr("x", function(d) {
+			return d[0];
+		})
+		.attr("y", function(d) {
+			return d[1];
+		})
+		.attr("id", "tooltip")
+		.attr("fill", "white")
+		.attr("text-anchor", "middle")
+		.attr("font-size", fontSize)
+		.text(function(d) {
+			return d[2];
+		})
+}
+
+function getClickedLines(mouseClick) {
+	var clicked = [];
+	var clickedCenPts = [];
+
+	// find which data is activated right now
+	var activeData = getActiveData();
+
+	// find centriod points
+	var graphCentPts = getCentroids(activeData);
+
+	if (graphCentPts.length == 0) return false;
+
+	// find between which axes the point is
+	var axeNum = findAxes(mouseClick, graphCentPts[0]);
+	if (!axeNum) return false;
+
+	graphCentPts.forEach(function(d, i) {
+		if (isOnLine(d[axeNum - 1], d[axeNum], mouseClick, 2)) {
+			clicked.push(activeData[i]);
+			clickedCenPts.push(graphCentPts[i]); // for tooltip
+		}
+	});
+
+	return [clicked, clickedCenPts]
+}
+
+
+function highlightLineOnClick(mouseClick, drawTooltip) {
+
+	var clicked = [];
+	var clickedCenPts = [];
+
+	clickedData = getClickedLines(mouseClick);
+
+	if (clickedData && clickedData[0].length != 0) {
+
+		clicked = clickedData[0];
+		clickedCenPts = clickedData[1];
+
+		// highlight clicked line
+		parcoords.highlight(clicked);
+
+		if (drawTooltip) {
+			// clean if anything is there
+			cleanTooltip();
+			// add tooltip
+			addTooltip(clicked, clickedCenPts);
+		}
+
+	}
+}
+
+
+// SlickGrid
+var options = {
+	enableCellNavigation: true,
+	multiColumnSort: false
+};
+
+var dataView = new Slick.Data.DataView();
+var grid = new Slick.Grid("#grid", dataView, columns, options);
+var pager = new Slick.Controls.Pager(dataView, grid, $("#pager"));
+
+// wire up model events to drive the grid
+dataView.onRowCountChanged.subscribe(function(e, args) {
+	grid.updateRowCount();
+	grid.render();
+});
+
+dataView.onRowsChanged.subscribe(function(e, args) {
+	grid.invalidateRows(args.rows);
+	grid.render();
+});
+
+
+// column sorting
+var sortcol = column_keys[0];
+var sortdir = 1;
+
+function comparer(a, b) {
+
+    // Baohong Zhang: fix to sort numberic values
+    if ($.isNumeric(a[sortcol]) && $.isNumeric(b[sortcol])) {
+		a[sortcol] = parseFloat(a[sortcol], 10);
+		b[sortcol] = parseFloat(b[sortcol], 10);
+	}
+
+	var x = a[sortcol],
+		y = b[sortcol];
+	return (x == y ? 0 : (x > y ? 1 : -1));
+}
+
+// click header to sort grid column
+grid.onSort.subscribe(function(e, args) {
+	sortdir = args.sortAsc ? 1 : -1;
+	sortcol = args.sortCol.field;
+
+	dataView.sort(comparer, args.sortAsc);
+});
+
+// highlight row in chart
+// Baohong: Added Tooltip
+grid.onMouseEnter.subscribe(function(e, args) {
+//	var d = parcoords.brushed() || data;
+	var r = grid.getCellFromEvent(e).row;
+	var i = dataView.getIdxById(grid.getDataItem(r)["id"])  // Baohong: sorting changes underlying data order
+
+	var d = parcoords.brushed() || data;
+	parcoords.highlight([d[i]]);
+	// clean if anything is there
+	cleanTooltip();
+	// add tooltip
+	addTooltip([d[i]], getCentroids([d[i]]));
+});
+
+grid.onMouseLeave.subscribe(function(e, args) {
+	parcoords.unhighlight();
+	cleanTooltip();
+});
+
+grid.onHeaderContextMenu.subscribe(function(e, args) {
+	e.preventDefault();
+	var theDialog = $("#dialog_"+args.column.id).dialog();
+	theDialog.dialog("option", "position", [e.pageX,e.pageY]);
+	theDialog.dialog("open");
+});
+
+grid.onClick.subscribe(function(e, args) {
+
+	// args.row - row of the clicked cell
+	// args.cell - column of the clicked cell
+});
+
+
+// update grid on brush
+parcoords.on("brush", function(d) {
+	gridUpdate(d);
+});
+
+
+var searchString = "";
+
+function myFilter(data, args) {
+	if (args.searchString != "" && data[columns[0].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1 &&
+		data[columns[1].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1 &&
+		data[columns[2].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1 &&
+		data[columns[3].name].toUpperCase().indexOf(args.searchString.toUpperCase()) == -1) {
+		return false;
+	}
+	return true;
+}
+
+$("#txtSearch").keyup(function(e) {
+	Slick.GlobalEditorLock.cancelCurrentEdit();
+
+	// clear on Esc
+	if (e.which == 27) {
+		this.value = "";
+	}
+
+	searchString = this.value;
+	updateFilter();
+});
+
+function updateFilter() {
+	dataView.setFilterArgs({
+		searchString: searchString
+	});
+	dataView.refresh();
+}
+
+function gridUpdate(data) {
+	dataView.beginUpdate();
+	dataView.setItems(data);
+
+	dataView.setFilterArgs({
+		searchString: searchString
+	});
+
+	dataView.setFilter(myFilter);
+
+	dataView.endUpdate();
+};
+
+// fill grid with data
+gridUpdate(data);
+
+window.onload = function() {
+	if(!window.location.hash) {
+		window.location = window.location + '#loaded';
+		window.location.reload();
+	}
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,104 @@
+########################################################################
+#
+# RNA-seq sequencing project specific information
+#
+#######################################################################
+
+RUN_STAR=y
+RUN_FEATURECOUNTS=y
+RUN_SNPCALL=y
+RUN_RSEM=y
+RUN_SALMON=n
+RUN_KALLISTO=n
+
+# !!!!!!
+# Species: human, mouse, rat and etc
+SAMPLE_SPECIES=mouse
+
+# !!!!!!
+# Directory for FASTQ files. This parameter MUST be changed
+# every time when you analyze a new project/dataset
+FASTQ_DIR=/camhpc/ngs/projects/GEO/Stefka/TST10345_TST11079
+
+# !!!!!!
+# stranded or nonstranded. #0: nonstranded;  1: forward strandness;  2: reverse strandness
+# For Illumina true mRNA-seq, this parameter is usually set to 2
+STRAND=0
+
+# !!!!!!
+# If you don't have an annotation, please comment the next line
+# If you do, please make sure coulmn #1 and #2 correponding to
+# Sample_ID and Subject_ID, respectively.
+SAMPLE_ANNOTATION=sample.annotation.txt
+
+# Suffix for fastq:  fq.gz or fastq.gz or fastq  or fq
+FASTQ_SUFFIX=fastq.gz
+
+# Select the algorithm for quantification:  RSEM, KALLISTO, SALMON_ALN, SALMON
+# You can set this papareter to ALL if you want to run all algorithms. 
+# SALMON_ALN is generally recommeded. KALLISTO and RSEM also work great.
+#
+#ISOFORM_ALGORITHM=SALMON_ALN
+#ISOFORM_ALGORITHM=ALL
+ISOFORM_ALGORITHM=RSEM
+#ISOFORM_ALGORITHM=KALLISTO
+#ISOFORM_ALGORITHM=SALMON
+
+# sequencing type: pair or single
+SEQUENCE_TYPE=pair
+
+# sequencing depth #regular: 40-80M; #deep: >80M, or encounter issues with STAR run due to BAM sorting
+SEQUENCE_DEPTH=regular
+
+#log directory
+LOGDIR=/camhpc/ngs/projects/TST10345_TST11079/analysis/log
+mkdir -p $LOGDIR
+
+
+
+#######################################################################
+#
+##Software specific parameters
+##Usually, you DON'T need to modify them unless you understand the
+##impacts of these parameters
+#
+#######################################################################
+STAR_PARAMETER="--alignSJDBoverhangMin 1 --outFilterMismatchNoverLmax 0.05 --alignIntronMax 1000000"
+FEATURECOUNTS_OVERLAP="--minOverlap 25"
+VARSCAN_PARAMETER="--min-coverage 20 --min-reads2 4"
+
+RSEM_PARAMETER="--seed 12345 --quiet --time  --no-bam-output --bam"
+SALMON_ALN_PARAMETER=" --incompatPrior 0 "
+SALMON_PARAMETER=" --incompatPrior 0  --validateMappings "
+KALLISTO_PARAMETER=" "
+
+
+
+# change 100 to 150 for read length > 100
+STAR_INDEX=/camhpc/ngs/genomes/mouse/gencode.vM16/STAR_100
+RSEM_INDEX=/camhpc/ngs/genomes/mouse/gencode.vM16/rsem/rsem
+
+GENOME_FASTA=/camhpc/ngs/genomes/mouse/gencode.vM16/fasta/GRCm38.primary.genome.fa
+TRANSCRIPT_FASTA=/camhpc/ngs/genomes/mouse/gencode.vM16/fasta/gencode.vM16.transcripts.polish.fa
+GTF_FILE=/camhpc/ngs/genomes/mouse/gencode.vM16/annotation/gencode.vM16.gtf
+GENE_ANNOTATION=/camhpc/ngs/genomes/mouse/gencode.vM16/annotation/gencode.vM16.gene.annot
+TRANSCRIPT_ANNOTATION=/camhpc/ngs/genomes/mouse/gencode.vM16/annotation/gencode.vM16.transcripts.annot
+# HLA region for the most SNPs, it is orgnism specific
+CHR_REGION=chr17:1-94987271
+
+# tools
+module purge
+module load STAR/2.5.2a
+module load rsem/1.2.26
+module load subread/1.5.0-p1
+module load bowtie/1.2.2
+module load samtools/1.9
+module load R/3.5.1
+module load pandoc/2.1.1
+module load varscan/2.4.2
+VARSCAN_JAR=/camhpc/pkg/varscan/2.4.2/centos6/varscan.jar
+
+export QuickIsoSeq=/camhpc/ngs/tools/pipelines/QuickIsoSeq
+export SCRIPTPATH=/camhpc/ngs/tools/pipelines/QuickIsoSeq/QuickIsoSeq_html
+export PATH=$QuickIsoSeq:$SCRIPTPATH:$PATH
+
